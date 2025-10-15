@@ -10,7 +10,7 @@
       .card { border: 1px solid #ddd; padding: 1rem; border-radius: 8px; max-width: 720px; }
       img.logo { max-width: 200px; height: auto; display:block; margin-bottom:1rem }
       pre { background:#f6f8fa; padding:0.75rem; border-radius:6px; overflow:auto }
-    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   </head>
   <body>
     <header>
@@ -52,24 +52,11 @@
       
       document.getElementById('imageUrl').textContent = imageUrl;
       
-      async function computeMD5(level) {
-        try {
-          const response = await fetch('/compute_md5', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ level: level })
-          });
-          const data = await response.json();
-          return data.md5;
-        } catch (error) {
-          console.error('Error computing MD5:', error);
-          return 'Error';
-        }
+      function computeMD5(level) {
+        return CryptoJS.MD5(level.toString()).toString();
       }
       
-      img.onload = async function() {
+      img.onload = function() {
         const width = this.naturalWidth;
         const height = this.naturalHeight;
         const level = width * height;
@@ -81,8 +68,7 @@
         document.getElementById('imageStatus').style.color = 'green';
         
         // Compute MD5
-        document.getElementById('md5Hash').textContent = 'Computing...';
-        const md5 = await computeMD5(level);
+        const md5 = computeMD5(level);
         document.getElementById('md5Hash').textContent = md5;
       };
       
