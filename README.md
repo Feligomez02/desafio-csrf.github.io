@@ -1,26 +1,28 @@
-# Sitio de prueba
+# desafio-csrf.github.io
 
-Esta carpeta contiene `prueba.html`, una página estática de ejemplo para hacer pruebas locales.
+Proyecto para el desafío de CSRF: Extracción de dimensiones de imagen y cálculo de nivel con MD5.
 
-## Cómo servir la carpeta (PowerShell - Windows)
+## Descripción
 
-1. Abre PowerShell y cambia al directorio donde está este archivo:
+Esta página web realiza un ataque CSRF para obtener las dimensiones de la imagen de perfil de un usuario en el sitio "Imagen Importante", calcula el nivel (ancho × alto) y genera el hash MD5 del mismo.
 
-   Set-Location -Path "C:\Users\felip\OneDrive\Documentos"
+## Cómo funciona
 
-2. Opción A — si tienes Python 3 instalado (recomendado):
+- La página carga la imagen desde el endpoint objetivo.
+- Extrae las dimensiones naturales de la imagen.
+- Calcula el nivel como ancho × alto.
+- Computa el MD5 del nivel usando JavaScript.
+- Muestra los resultados.
 
-   python -m http.server 8000
+## Acceso
 
-   Esto levantará un servidor en http://localhost:8000
+Visita: https://feligomez02.github.io/desafio-csrf/
 
-3. Opción B — si tienes Node.js instalado y prefieres usar http-server:
+## Desarrollo local
 
-   npx http-server -p 8000
+Para probar localmente:
 
-4. Abre tu navegador e ingresa a: http://localhost:8000
+1. Clona el repositorio.
+2. Abre `index.html` en un navegador (o usa un servidor local).
 
-## Notas
-
-- Si el puerto 8000 ya está en uso, cámbialo por otro número (por ejemplo 3000).
-- En Windows PowerShell, si `python` no está en el PATH, intenta `py -3 -m http.server 8000`.
+Nota: Requiere conexión a internet para cargar la imagen del sitio objetivo.
